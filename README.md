@@ -7,7 +7,20 @@ An Express.js with Apollo-Server on the backend will provide support for interfa
 # Development & Deployment
 Each service is implemented in Docker containers and is orchestrated by Docker Compose. Docker Hub hosts the latest Docker images and Github Actions is used to implement CI/CD and tests the code against a linter and unit tests before pushing the latest images to Docker Hub. The production enviroment is hosted on a Digital Ocean Droplet and is served via NGINX. The production enviroment contains a watchtower container and will keep the docker images up to date with Docker Hub.      
 
-
 # Planning Document
 See Google Doc: https://docs.google.com/document/d/12omxQm3lOl07tmHQc7-asemnKPaaRVxeHa4zPow1GW8/edit?usp=sharing
 
+
+
+
+# Testing PostgreSQL database
+
+1) From root directory open terminal and run 'docker-compose up'
+
+2) Open a second terminal from root directory and enter 'docker-compose run database bash'
+
+3) In bash terminal enter, 'psql --host=database --username=tom --dbname=pgdb' 
+
+4) When prompted enter password found in database.env
+
+5) SQL operations can now be run against the database

@@ -1,0 +1,16 @@
+version: "3.9" # optional since v1.27.0
+services:
+  database:
+    image: "postgres" # use latest post gres
+    env_file:
+      - database.env # configure post gres
+    volumes:
+      - database-data:/var/lib/postgresql/data/ # persist data when container shuts down
+  server:
+    build: ./server
+    ports:
+      - "3000:3000"
+
+volumes:
+  database-data: # named volume easier to manage
+
