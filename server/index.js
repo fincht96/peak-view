@@ -1,47 +1,64 @@
 
 
-const express = require('express')
-const app = express()
-const port = 3000
-const { Pool, Client } = require('pg')
+// const express = require('express')
+// const app = express()
+// const port = 3000
 
-const pool = new Pool({
-  user: 'tom',
-  host: 'database',
-  database: 'pgdb',
-  password: 'Lemon501',
-  port: 5432,
-})
-pool.query(`SELECT * FROM color_table;`, (err, res) => {
-  console.log("Here!")
 
-  if(err){
-      console.log("error: ", err)
-  }
-  else{
-      console.log(res)
-  }
 
-  pool.end()
-})
-// const client = new Client({
-//   user: 'dbuser',
-//   host: 'database.server.com',
-//   database: 'mydb',
-//   password: 'secretpassword',
-//   port: 3211,
+
+const { ApolloServer, gql } = require('apollo-server');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// app.get('/', (req, res) => {
+//   res.send('Hello World!')
 // })
-// client.connect()
-// client.query('SELECT NOW()', (err, res) => {
-//   console.log(err, res)
-//   client.end()
+
+// app.listen(port, () => {
+//   console.log(`Example app listening at http://localhost:${port}`)
 // })
 
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+// const pefReadings = [
+//   {
+//     pefValue: 500,
+//     medication: "Inhaler",
+//     comment: "Feeling well today"
+//   },
+//   {
+//     pefValue: 475,
+//     medication: "None",
+//     comment: "Little bit out of breath"
+//   }
+// ]
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+// Resolvers define the technique for fetching the types defined in the
+// schema. This resolver retrieves books from the "books" array above.
+const resolvers = {
+  Query: {
+    pefReadings: () => pefReadings,
+  },
+};
+
+
+const server = new ApolloServer({ typeDefs, resolvers });
+
+// The `listen` method launches a web server.
+server.listen().then(({ url }) => {
+  console.log(`🚀  Server ready at ${url}`);
+});
