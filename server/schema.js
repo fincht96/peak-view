@@ -11,6 +11,15 @@ const typeDefs = gql`
     comment: String
   }
 
+  input PEFReadingInput {
+    id: ID!
+    createdAt: String
+    pefValue: Int
+    medication: String
+    medicationTime: MedicationTime
+    comment: String
+  }
+
   type PEFReadingResponse {
       success: Boolean!
       message: String
@@ -24,12 +33,12 @@ const typeDefs = gql`
   }
 
   type Query {
-    pefReadings: [PEFReading]
-    pefReading(id: ID!): PEFReading
+    readings: [PEFReading]!
+    reading(id: ID!): PEFReading
   }
 
   type Mutation {
-    addReading(newReading: PEFReading): PEFReadingResponse!
+    addReading(pefReading: PEFReadingInput!): PEFReadingResponse!
     deleteReading(pefReadingID: ID!): PEFReadingResponse!
   }
 

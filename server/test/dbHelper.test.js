@@ -7,8 +7,7 @@ const dbHelper = require('../dbHelper')
 
 describe('dbHelper', function() {
   describe('connecting to database', function() {
-    it('should not throw an error', async function() {
-
+    it('should return a pefReadings object', async function() {
         expect((await dbHelper.createStore()).to.not.throw())
 
     });

@@ -9,7 +9,7 @@ services:
   server:
     build: ./server
     ports:
-      - "3000:3000"
+      - "4000:4000"
 
 volumes:
   database-data: # named volume easier to manage

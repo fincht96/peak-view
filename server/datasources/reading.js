@@ -12,23 +12,31 @@ class ReadingAPI extends DataSource{
         this.config = config.context;
     }
 
-    async getReadingByID({readingID}){
+    async getReadingByID({id}){
+        const found = await this.store.pefReadings.findAll({
+          where: { id },
+        });
 
+        if(found.length){
+            console.log(found[0])
+            return found[0];
+        }
+        
+        return {};
     }
 
     async getAllReadings(){
-
+        const found = await this.store.pefReadings.findAll();
+        return found;
     }
 
-    async addNewReading({newReading}){
-
-
+    async addNewReading(reading){
+        return (await this.store.pefReadings.create(reading));
     }
 
-    async deleteReading({reading}){
-
+    async deleteReading({readingID}){
+        return (await this.store.pefReadings.destroy({ where: { readingID } }));
     }
-
 
 }
 
