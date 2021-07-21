@@ -1,13 +1,5 @@
 
 
-// const express = require('express')
-// const app = express()
-// const port = 3000
-
-
-
-
-
 const { ApolloServer } = require('apollo-server');
 
 const typeDefs = require('./schema');
@@ -33,7 +25,11 @@ createStore().then((store) => {
       Listening on port 4000
       Explore at https://studio.apollographql.com/sandbox
     `);
-  });
+  }).catch(e => {
+    console.log(e)
+  })
+}).catch(e => {
+  console.log(e)
 })
 
 

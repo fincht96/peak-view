@@ -10,7 +10,8 @@
      */
     
     module.exports.createStore = async () => {       
-        const db = new SQL('postgres://tom:Lemon501@database:5432/pgdb');
+        console.log("here")
+        const db = new SQL('postgres://tom:Lemon501@db:5432/pgdb');
         await db.authenticate(); 
 
         let pefReadings = db.define('pefReading', {
