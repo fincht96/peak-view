@@ -13,12 +13,15 @@ class ReadingAPI extends DataSource{
     }
 
     async getReadingByID({id}){
+
+        console.log("{id}", {id})
+        console.log("id", id)
+        console.log("{id:id}", {id:id})
         const found = await this.store.pefReadings.findAll({
           where: { id },
         });
 
         if(found.length){
-            console.log(found[0])
             return found[0];
         }
         
@@ -30,12 +33,20 @@ class ReadingAPI extends DataSource{
         return found;
     }
 
-    async addNewReading(reading){
-        return (await this.store.pefReadings.create(reading));
+    async addNewReading({pefReading}){
+        let res = await this.store.pefReadings.create(pefReading);
+
+        console.log("addNewReading: ", res);
+
+        return res;
     }
 
-    async deleteReading({readingID}){
-        return (await this.store.pefReadings.destroy({ where: { readingID } }));
+    async deleteReading({id}){
+        let res = await this.store.pefReadings.destroy({ where: { id } })
+
+        console.log("deleteReading: ", res);
+
+        return res;
     }
 
 }

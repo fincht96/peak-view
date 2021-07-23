@@ -12,7 +12,6 @@ const typeDefs = gql`
   }
 
   input PEFReadingInput {
-    id: ID!
     createdAt: String
     pefValue: Int
     medication: String
@@ -39,7 +38,7 @@ const typeDefs = gql`
 
   type Mutation {
     addReading(pefReading: PEFReadingInput!): PEFReadingResponse!
-    deleteReading(pefReadingID: ID!): PEFReadingResponse!
+    deleteReading(id: ID!): PEFReadingResponse!
   }
 
 
