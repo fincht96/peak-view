@@ -4,6 +4,38 @@ import React from 'react'
 import styles from '../styles/Home.module.css'
 
 
+import {
+  useQuery,
+  gql
+} from "@apollo/client";
+
+
+
+const EXCHANGE_RATES = gql`
+  query GetExchangeRates {
+    rates(currency: "USD") {
+      currency
+      rate
+    }
+  }
+`;
+
+function ExchangeRates() {
+  const { loading, error, data } = useQuery(EXCHANGE_RATES);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
+
+  return data.rates.map(({ currency, rate }) => (
+    <div key={currency}>
+      <p>
+        {currency}: {rate}
+      </p>
+    </div>
+  ));
+}
+
+
 export default class Home extends React.Component  {
   constructor(props){
     super(props);
@@ -12,9 +44,18 @@ export default class Home extends React.Component  {
     }
   }
 
+  componentDidMount(){
+    console.log("component mounted")
+ 
+
+
+  }
+
   render(){
     return (
       <div className={styles.container}> 
+
+        <ExchangeRates/>
         <div>Hello {this.state.name}</div>
       </div>
     )
