@@ -3,60 +3,102 @@ import Image from 'next/image'
 import React from 'react'
 import styles from '../styles/Home.module.css'
 
-
 import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
   useQuery,
   gql
 } from "@apollo/client";
 
+const client = new ApolloClient({
+  uri: 'http://localhost:4000',
+  cache: new InMemoryCache()
+});
 
 
-const EXCHANGE_RATES = gql`
-  query GetExchangeRates {
-    rates(currency: "USD") {
-      currency
-      rate
+
+
+
+const READINGS = gql`
+  query GetReadings {
+    readings {
+      id	
+      pefValue
+      medication
+      comment
     }
   }
 `;
 
-function ExchangeRates() {
-  const { loading, error, data } = useQuery(EXCHANGE_RATES);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
-
-  return data.rates.map(({ currency, rate }) => (
-    <div key={currency}>
-      <p>
-        {currency}: {rate}
-      </p>
-    </div>
-  ));
-}
 
 
 export default class Home extends React.Component  {
   constructor(props){
     super(props);
     this.state = {
-      name: 'Thomas'
+      name: 'Thomas',
+      results: []
     }
   }
 
-  componentDidMount(){
+  async componentDidMount(){
     console.log("component mounted")
- 
+   
+    try{
+      let results = await client.query({query: READINGS});
+
+      this.setState({
+        results: results.data.readings,
+      });
+
+      console.log(this.state.results)
+      
+    }
+    catch(e){
+      console.error(e)
+    }
+
+   
+
+
 
 
   }
 
   render(){
+
+    let listResults = this.state.results.map((result) =>
+      <li key={result.id}>{result.pefValue}, {result.medication}, {result.comment}</li>
+    );
+
     return (
+      
+
       <div className={styles.container}> 
 
-        <ExchangeRates/>
-        <div>Hello {this.state.name}</div>
+      <div className={styles.main}>
+        
+        
+    
+      {listResults}
+
+
+      </div>
+      
+      <footer className={styles.footer}>
+         <a
+          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Powered by{' '}
+          <span className={styles.logo}>
+            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+          </span>
+        </a>
+      </footer>
       </div>
     )
   }

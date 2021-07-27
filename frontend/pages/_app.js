@@ -6,16 +6,13 @@ import {
   useQuery,
   gql
 } from "@apollo/client";
+import React from 'react';
 
-const client = new ApolloClient({
-  uri: 'https://48p1r2roz4.sse.codesandbox.io',
-  cache: new InMemoryCache()
-});
+
 
 function MyApp({ Component, pageProps }) {
-  return (<ApolloProvider client={client}>
-    <Component {...pageProps} />
-    </ApolloProvider>)
+  return <Component {...pageProps} />
 }
 
 export default MyApp
+
