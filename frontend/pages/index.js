@@ -46,6 +46,15 @@ const ADD_READING = gql`
   }
 `
 
+const DELETE_READING = gql`
+  mutation DeleteReading($id: ID!) {
+    deleteReading(id: $id){
+      success
+      message
+    } 
+  }
+`
+
 // id: ID!
 // createdAt: String
 // pefValue: Int
@@ -141,8 +150,40 @@ export default class Home extends React.Component  {
     super(props);
     this.state = {
       name: 'Thomas',
-      results: []
+      results: [],
+      selected: []
     }
+
+    this.deleteSelected = this.deleteSelected.bind(this);
+    this.onSelected = this.onSelected.bind(this);
+  }
+
+  onSelected(event, id){
+    if(event.target.checked){
+      console.log(id)
+      this.state.selected = [...this.state.selected, id];
+    }
+  }
+
+  async deleteSelected(event){
+
+    try{
+
+      console.log(parseInt(this.state.selected[0]))
+      let res = await client.mutate({mutation: DELETE_READING,  variables: {
+        id: parseInt(this.state.selected[0]),
+      } });
+  
+      console.log(res)
+    }
+    catch(e){
+      console.error(e)
+    }
+    
+
+    
+    event.preventDefault();
+
   }
 
   async componentDidMount(){
@@ -172,7 +213,9 @@ export default class Home extends React.Component  {
   render(){
 
     let listResults = this.state.results.map((result) =>
-      <li className={styles.reading} key={result.id}>{result.pefValue}, {result.medication}, {result.comment}</li>
+      <li className={styles.reading} key={result.id}>{result.pefValue}, {result.medication}, {result.comment} <input onChange={(e) => {
+        this.onSelected(e, result.id)
+      }} type="checkbox"/></li>
     );
 
     return (
@@ -185,6 +228,10 @@ export default class Home extends React.Component  {
 
       <div>Add new result:</div>
       <ReadingForm/>
+
+      <br/>
+      
+      <div onClick={this.deleteSelected}>delete selected</div>
     
         
         

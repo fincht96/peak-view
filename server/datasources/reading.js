@@ -42,7 +42,7 @@ class ReadingAPI extends DataSource{
     }
 
     async deleteReading({id}){
-        let res = await this.store.pefReadings.destroy({ where: { id } })
+        let res = await this.store.pefReadings.destroy({ where: id  })
 
         console.log("deleteReading: ", res);
 

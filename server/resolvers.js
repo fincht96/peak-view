@@ -26,7 +26,7 @@ module.exports = {
       deleteReading: async (_, {id}, { dataSources }) => {
 
         console.log("delete reading here")
-        let res = await dataSources.readingAPI.deleteReading({id: id});
+        let res = await dataSources.readingAPI.deleteReading({id});
 
         if(res){
           return {

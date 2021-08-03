@@ -11,7 +11,6 @@
 .main {
   max-width: 1000px;
   width:100%;
-  border:solid green 1px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -23,8 +22,6 @@
 .reading{
   width: 100%;
   text-align: left;
-  color:red;
-  border:solid red 1px;
 }
 
 .footer {
