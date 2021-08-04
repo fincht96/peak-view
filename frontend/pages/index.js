@@ -41,6 +41,10 @@ const ADD_READING = gql`
       message
       pefReading {
         pefValue
+        id
+        comment
+        medication
+        medicationTime
       }
     } 
   }
@@ -55,12 +59,7 @@ const DELETE_READING = gql`
   }
 `
 
-// id: ID!
-// createdAt: String
-// pefValue: Int
-// medication: String
-// medicationTime: MedicationTime
-// comment: String
+
 
 class ReadingForm extends React.Component {
   constructor(props) {
@@ -89,17 +88,23 @@ class ReadingForm extends React.Component {
   }
 
   async handleSubmit(event){
-    console.log(this.state)
     event.preventDefault();
+    try{
+      let newReading = {
+          pefValue: parseInt(this.state.pefValue),
+          medication: this.state.medication,
+          medicationTime: this.state.medicationTime,
+          comment: this.state.comment,
+      }
+      let res = await client.mutate({mutation: ADD_READING,  variables: newReading });
+      this.props.addNewReading(res.data.addReading.pefReading);
+    }
+    catch(e){
+      console.error(e)
+    }
 
-    let res = await client.mutate({mutation: ADD_READING,  variables: {
-      pefValue: parseInt(this.state.pefValue),
-      medication: this.state.medication,
-      medicationTime: this.state.medicationTime,
-      comment: this.state.comment,
-    } });
 
-    console.log('res', res)
+   
   }
 
   render() {
@@ -160,21 +165,34 @@ export default class Home extends React.Component  {
 
   onSelected(event, id){
     if(event.target.checked){
-      console.log(id)
       this.state.selected = [...this.state.selected, id];
     }
   }
 
   async deleteSelected(event){
 
+    console.log(this.state.selected[0])
+
     try{
 
-      console.log(parseInt(this.state.selected[0]))
-      let res = await client.mutate({mutation: DELETE_READING,  variables: {
-        id: parseInt(this.state.selected[0]),
-      } });
+      for(let i = 0; i < this.state.selected.length; i++){
+        await client.mutate({mutation: DELETE_READING,  variables: {
+          id: this.state.selected[i],
+        } });
+      }
+
+      let newResults = this.state.results.filter((result) => {
+        if(!this.state.selected.includes(result.id)){
+          return result;
+        }
+      })
+
+      this.setState({
+        results: newResults
+      })
   
-      console.log(res)
+
+
     }
     catch(e){
       console.error(e)
@@ -227,7 +245,14 @@ export default class Home extends React.Component  {
 
 
       <div>Add new result:</div>
-      <ReadingForm/>
+      <ReadingForm addNewReading={(reading) => {
+
+        console.log(reading)
+        this.setState({
+          results: [...this.state.results, reading]
+        })
+        
+      }}/>
 
       <br/>
       

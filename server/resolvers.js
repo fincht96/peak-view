@@ -11,22 +11,24 @@ module.exports = {
         let res = await dataSources.readingAPI.addNewReading({pefReading});
 
         if(res){
+          console.log(res)
           return {
             success: true,
             message: "Reading added successfully",
+            pefReading: res
           }
         }
 
         return {
           success: false,
           message: "Unable to add reading",
+          pefReading: null
         }
       },
 
       deleteReading: async (_, {id}, { dataSources }) => {
 
-        console.log("delete reading here")
-        let res = await dataSources.readingAPI.deleteReading({id});
+        let res = await dataSources.readingAPI.deleteReading({id: id});
 
         if(res){
           return {
