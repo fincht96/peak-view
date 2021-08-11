@@ -1,32 +1,32 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import React from 'react'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import Image from "next/image";
+import React from "react";
+import styles from "../styles/Home.module.scss";
 
 import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
   useQuery,
-  gql
+  gql,
 } from "@apollo/client";
 
 const client = new ApolloClient({
-  uri: 'http://localhost:4000',
+  uri: "http://localhost:4000",
   cache: new InMemoryCache(),
   typeDefs: gql`
-  enum MedicationTime {
-    NONE
-    PRE
-    POST
-  }
-`,
+    enum MedicationTime {
+      NONE
+      PRE
+      POST
+    }
+  `,
 });
 
 const GET_READINGS = gql`
   query GetReadings {
     readings {
-      id	
+      id
       pefValue
       medication
       comment
@@ -35,8 +35,20 @@ const GET_READINGS = gql`
 `;
 
 const ADD_READING = gql`
-  mutation AddReading($pefValue: Int, $medication: String, $medicationTime: MedicationTime, $comment: String) {
-    addReading(pefReading:{pefValue: $pefValue, medication: $medication, medicationTime: $medicationTime, comment: $comment}){
+  mutation AddReading(
+    $pefValue: Int
+    $medication: String
+    $medicationTime: MedicationTime
+    $comment: String
+  ) {
+    addReading(
+      pefReading: {
+        pefValue: $pefValue
+        medication: $medication
+        medicationTime: $medicationTime
+        comment: $comment
+      }
+    ) {
       success
       message
       pefReading {
@@ -46,29 +58,27 @@ const ADD_READING = gql`
         medication
         medicationTime
       }
-    } 
+    }
   }
-`
+`;
 
 const DELETE_READING = gql`
   mutation DeleteReading($id: ID!) {
-    deleteReading(id: $id){
+    deleteReading(id: $id) {
       success
       message
-    } 
+    }
   }
-`
-
-
+`;
 
 class ReadingForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      pefValue: '', 
-      medication: '', 
-      medicationTime: 'NONE', 
-      comment: ''
+      pefValue: "",
+      medication: "",
+      medicationTime: "NONE",
+      comment: "",
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -77,210 +87,216 @@ class ReadingForm extends React.Component {
 
   handleChange(event) {
     const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
 
     this.setState({
-      [name]: value
+      [name]: value,
     });
-
-
   }
 
-  async handleSubmit(event){
+  async handleSubmit(event) {
     event.preventDefault();
-    try{
+    try {
       let newReading = {
-          pefValue: parseInt(this.state.pefValue),
-          medication: this.state.medication,
-          medicationTime: this.state.medicationTime,
-          comment: this.state.comment,
-      }
-      let res = await client.mutate({mutation: ADD_READING,  variables: newReading });
+        pefValue: parseInt(this.state.pefValue),
+        medication: this.state.medication,
+        medicationTime: this.state.medicationTime,
+        comment: this.state.comment,
+      };
+      let res = await client.mutate({
+        mutation: ADD_READING,
+        variables: newReading,
+      });
       this.props.addNewReading(res.data.addReading.pefReading);
+    } catch (e) {
+      console.error(e);
     }
-    catch(e){
-      console.error(e)
-    }
-
-
-   
   }
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
+      <form onSubmit={this.handleSubmit} className={styles.form}>
+        <div className={styles.subTitle}>Add new result:</div>
+
+        <label className={styles.inputGroup}>
           PEF:
-          <input name="pefValue" type="number" value={this.state.pefValue} onChange={this.handleChange} />
+          <br />
+          <input
+            name="pefValue"
+            type="number"
+            value={this.state.pefValue}
+            onChange={this.handleChange}
+          />
         </label>
 
-        <br/>
-
-        <label>
+        <label className={styles.inputGroup}>
           Medication:
-          <input name="medication" type="text" value={this.state.medication} onChange={this.handleChange} />
+          <input
+            name="medication"
+            type="text"
+            value={this.state.medication}
+            onChange={this.handleChange}
+          />
         </label>
 
-        <br/>
-
-        <label>
+        <label className={styles.inputGroup}>
           Medication time:
-          <select name="medicationTime" value={this.state.medicationTime} onChange={this.handleChange}>
+          <select
+            name="medicationTime"
+            value={this.state.medicationTime}
+            onChange={this.handleChange}
+          >
             <option value="NONE">None</option>
             <option value="PRE">Pre-med</option>
             <option value="POST">Post-med</option>
           </select>
         </label>
 
-        <br/>
-
-        <label>
+        <label className={styles.inputGroup}>
           Comment:
-          <input name="comment" type="text" value={this.state.comment} onChange={this.handleChange} />
+          <input
+            name="comment"
+            type="text"
+            value={this.state.comment}
+            onChange={this.handleChange}
+          />
         </label>
 
-        <br/>
-
-        <input type="submit" value="Submit" />
+        <input
+          className={styles.addReadingBtn}
+          type="submit"
+          value="Add Reading"
+        />
       </form>
     );
   }
 }
 
-
-
-export default class Home extends React.Component  {
-  constructor(props){
+export default class Home extends React.Component {
+  constructor(props) {
     super(props);
     this.state = {
-      name: 'Thomas',
+      name: "Thomas",
       results: [],
-      selected: []
-    }
+      selected: [],
+    };
 
     this.deleteSelected = this.deleteSelected.bind(this);
     this.onSelected = this.onSelected.bind(this);
   }
 
-  onSelected(event, id){
-    if(event.target.checked){
-      this.state.selected = [...this.state.selected, id];
+  onSelected(event, id) {
+    if (event.target.checked) {
+      this.setState((prevState) => ({
+        selected: [...prevState.selected, id],
+      }));
+    } else {
+      let newArray = this.state.selected.filter((el) => {
+        if (el !== id) {
+          return el;
+        }
+      });
+      this.setState({
+        selected: [...newArray],
+      });
     }
   }
 
-  async deleteSelected(event){
-
-    console.log(this.state.selected[0])
-
-    try{
-
-      for(let i = 0; i < this.state.selected.length; i++){
-        await client.mutate({mutation: DELETE_READING,  variables: {
-          id: this.state.selected[i],
-        } });
+  async deleteSelected(event) {
+    try {
+      for (let i = 0; i < this.state.selected.length; i++) {
+        await client.mutate({
+          mutation: DELETE_READING,
+          variables: {
+            id: this.state.selected[i],
+          },
+        });
       }
 
       let newResults = this.state.results.filter((result) => {
-        if(!this.state.selected.includes(result.id)){
+        if (!this.state.selected.includes(result.id)) {
           return result;
         }
-      })
+      });
 
       this.setState({
-        results: newResults
-      })
-  
-
-
+        selected: [],
+        results: newResults,
+      });
+    } catch (e) {
+      console.error(e);
     }
-    catch(e){
-      console.error(e)
-    }
-    
 
-    
     event.preventDefault();
-
   }
 
-  async componentDidMount(){
-    console.log("component mounted")
-   
-    try{
-      let results = await client.query({query: GET_READINGS});
+  async componentDidMount() {
+    console.log("component mounted");
+
+    try {
+      let results = await client.query({ query: GET_READINGS });
 
       this.setState({
         results: results.data.readings,
       });
 
-      console.log(this.state.results)
-      
+      console.log(this.state.results);
+    } catch (e) {
+      console.error(e);
     }
-    catch(e){
-      console.error(e)
-    }
-
-   
-
-
-
-
   }
 
-  render(){
-
-    let listResults = this.state.results.map((result) =>
-      <li className={styles.reading} key={result.id}>{result.pefValue}, {result.medication}, {result.comment} <input onChange={(e) => {
-        this.onSelected(e, result.id)
-      }} type="checkbox"/></li>
-    );
+  render() {
+    let listResults = this.state.results.map((result) => (
+      <li className={styles.reading} key={result.id}>
+        {result.pefValue}, {result.medication}, {result.comment}{" "}
+        <input
+          onChange={(e) => {
+            this.onSelected(e, result.id);
+          }}
+          type="checkbox"
+        />
+      </li>
+    ));
 
     return (
-      
+      <div className={styles.container}>
+        <div className={styles.main}>
+          <ReadingForm
+            addNewReading={(reading) => {
+              console.log(reading);
+              this.setState({
+                results: [...this.state.results, reading],
+              });
+            }}
+          />
 
-      <div className={styles.container}> 
+          <br />
 
-      <div className={styles.main}>
+          <button onClick={this.deleteSelected}>Delete Selected</button>
 
+          {listResults}
+        </div>
 
-      <div>Add new result:</div>
-      <ReadingForm addNewReading={(reading) => {
-
-        console.log(reading)
-        this.setState({
-          results: [...this.state.results, reading]
-        })
-        
-      }}/>
-
-      <br/>
-      
-      <div onClick={this.deleteSelected}>delete selected</div>
-    
-        
-        
-    
-      {listResults}
-
-
+        <footer className={styles.footer}>
+          <a
+            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Powered by{" "}
+            <span className={styles.logo}>
+              <Image
+                src="/vercel.svg"
+                alt="Vercel Logo"
+                width={72}
+                height={16}
+              />
+            </span>
+          </a>
+        </footer>
       </div>
-      
-      <footer className={styles.footer}>
-         <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
-      </div>
-    )
+    );
   }
 }
-
-

@@ -10,7 +10,7 @@
 
 .main {
   max-width: 1000px;
-  width:100%;
+  width: 100%;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -18,8 +18,7 @@
   align-items: center;
 }
 
-
-.reading{
+.reading {
   width: 100%;
   text-align: left;
 }
@@ -124,5 +123,34 @@
   .grid {
     width: 100%;
     flex-direction: column;
+  }
+}
+
+
+.form{
+  border: solid #cccccc  1px;
+  width:100%;
+  max-width: 1000px;
+  padding: 10px;
+
+  .subTitle{
+    font-weight: 500;
+    margin-bottom: 25px;
+  }
+
+  .inputGroup{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+
+  .addReadingBtn{
+    width: 100%;
+    padding: 20px 10px;
+    font-size: 16px;
+    background-color: #fafafa;
+    border:none;
+    cursor: pointer;
   }
 }
