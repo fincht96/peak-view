@@ -11,6 +11,28 @@ import {
   gql,
 } from "@apollo/client";
 
+
+const formatAsDate = (ms) => {
+  let date = new Date(parseInt(ms));
+
+
+  let year = date.getFullYear() - 2000;
+  let month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
+  let day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+
+  return `${day}/${month}/${year}`;
+}
+
+const formatAsTime = (ms) => {
+  let date = new Date(parseInt(ms));
+
+
+  let hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
+  let mins = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
+
+  return `${hours}:${mins}`;
+}
+
 const client = new ApolloClient({
   uri: "http://localhost:4000",
   cache: new InMemoryCache(),
@@ -30,6 +52,7 @@ const GET_READINGS = gql`
       pefValue
       medication
       comment
+      createdAt
     }
   }
 `;
@@ -57,6 +80,7 @@ const ADD_READING = gql`
         comment
         medication
         medicationTime
+        createdAt
       }
     }
   }
@@ -70,6 +94,49 @@ const DELETE_READING = gql`
     }
   }
 `;
+
+class Results extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    let resultsList = this.props.results.map((result) => (
+      <tr key={result.id}>
+        <td>{formatAsDate(result.createdAt)}</td>
+        <td>{formatAsTime(result.createdAt)}</td>
+        <td>{result.pefValue}</td>
+        <td>{result.medication}</td>
+        <td>{result.comment}</td>
+
+        <td>
+          {" "}
+          <input
+            type="checkbox"
+            onChange={(e) => {
+              this.props.onSelected(e, result.id);
+            }}
+          />
+        </td>
+      </tr>
+    ));
+
+    return (
+      <table className={styles.table}>
+        <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>PEFR (L/min)</th>
+          <th>Medication</th>
+          <th>Comment</th>
+          <th>#</th>
+        </tr>
+
+        {resultsList} 
+      </table>
+    );
+  }
+}
 
 class ReadingForm extends React.Component {
   constructor(props) {
@@ -120,8 +187,8 @@ class ReadingForm extends React.Component {
         <div className={styles.subTitle}>Add new result:</div>
 
         <label className={styles.inputGroup}>
-          PEF:
-          <br />
+          <div className={styles.fieldName}>PEFR (L/min):</div>
+
           <input
             name="pefValue"
             type="number"
@@ -131,7 +198,7 @@ class ReadingForm extends React.Component {
         </label>
 
         <label className={styles.inputGroup}>
-          Medication:
+          <div className={styles.fieldName}>Medication:</div>
           <input
             name="medication"
             type="text"
@@ -141,7 +208,7 @@ class ReadingForm extends React.Component {
         </label>
 
         <label className={styles.inputGroup}>
-          Medication time:
+          <div className={styles.fieldName}>Medication Time:</div>
           <select
             name="medicationTime"
             value={this.state.medicationTime}
@@ -154,7 +221,7 @@ class ReadingForm extends React.Component {
         </label>
 
         <label className={styles.inputGroup}>
-          Comment:
+          <div className={styles.fieldName}>Comment:</div>
           <input
             name="comment"
             type="text"
@@ -237,6 +304,8 @@ export default class Home extends React.Component {
     try {
       let results = await client.query({ query: GET_READINGS });
 
+      console.log(results);
+
       this.setState({
         results: results.data.readings,
       });
@@ -248,20 +317,12 @@ export default class Home extends React.Component {
   }
 
   render() {
-    let listResults = this.state.results.map((result) => (
-      <li className={styles.reading} key={result.id}>
-        {result.pefValue}, {result.medication}, {result.comment}{" "}
-        <input
-          onChange={(e) => {
-            this.onSelected(e, result.id);
-          }}
-          type="checkbox"
-        />
-      </li>
-    ));
-
     return (
       <div className={styles.container}>
+        <header>
+          <h1>Peak View</h1>
+        </header>
+
         <div className={styles.main}>
           <ReadingForm
             addNewReading={(reading) => {
@@ -274,9 +335,14 @@ export default class Home extends React.Component {
 
           <br />
 
-          <button onClick={this.deleteSelected}>Delete Selected</button>
+          <img
+            onClick={this.deleteSelected}
+            src="/bin_icon.png"
+            alt="delete icon"
+            className={styles.delete}
+          />
 
-          {listResults}
+          <Results results={this.state.results} onSelected={this.onSelected} />
         </div>
 
         <footer className={styles.footer}>
