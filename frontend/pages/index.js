@@ -3,6 +3,8 @@ import Image from "next/image";
 import React from "react";
 import styles from "../styles/Home.module.scss";
 
+import Amplify, { Auth, Hub } from 'aws-amplify';
+
 import {
   ApolloClient,
   InMemoryCache,
@@ -322,6 +324,8 @@ export default class Home extends React.Component {
         <header>
           <h1>Peak View</h1>
         </header>
+
+        <button onClick={() => Auth.federatedSignIn({provider: 'Google'})}>Open Google</button>
 
         <div className={styles.main}>
           <ReadingForm

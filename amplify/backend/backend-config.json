@@ -1,6 +1,6 @@
 {
   "auth": {
-    "peakview16d90a75": {
+    "peakview58499da9": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],

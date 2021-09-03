@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "peakview16d90a75_identitypool_16d90a75",
+    "identityPoolName": "peakview58499da9_identitypool_58499da9",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "peakvi16d90a75",
-    "userPoolName": "peakview16d90a75_userpool_16d90a75",
+    "resourceNameTruncated": "peakvi58499da9",
+    "userPoolName": "peakview58499da9_userpool_58499da9",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -31,10 +31,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "peakvi16d90a75_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "peakvi58499da9_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "16d90a75",
-    "resourceName": "peakview16d90a75",
+    "sharedId": "58499da9",
+    "resourceName": "peakview58499da9",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -50,12 +50,12 @@
     },
     "useDefault": "defaultSocial",
     "hostedUI": true,
-    "hostedUIDomainName": "peakview16d90a75-16d90a75",
+    "hostedUIDomainName": "peakview",
     "authProvidersUserPool": [
         "Google"
     ],
     "hostedUIProviderMeta": "[{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"sub\"}}]",
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost:3000//\",\"https://www.example.com/\"],\"LogoutURLs\":[\"http://localhost:3000/\",\"https://www.example.com/\"]}",
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost:3000/\",\"https://www.example.com/\"],\"LogoutURLs\":[\"http://localhost:3000/\",\"https://www.example.com/\"]}",
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
